@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ollama多节点管理平台 - 自动化IP扫描、多模型支持、实时AI聊天解决方案">
+    <title>Free Ollama Chat - Ollama公共服务使用公具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="hero">
+        <div class="container">
+            <h1>Free Ollama Chat</h1>
+            <p class="subtitle">Ollama公共服务使用公具</p>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="container">
+            <h2>核心特性</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>⚡ 智能节点发现</h3>
+                    <p>自动扫描维护可用IP节点，支持自定义扫描间隔，实时更新服务状态</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤖 多模型支持</h3>
+                    <p>动态加载不同节点的AI模型，支持LLM模型一键切换，满足多样化需求</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🌐 实时流式交互</h3>
+                    <p>基于SSE技术的聊天系统，支持Markdown渲染与代码高亮，响应速度小于200ms</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔧 运维友好</h3>
+                    <p>完善的错误处理机制，自动重试与故障转移，系统可用性达99.9%</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="architecture">
+        <div class="container">
+            <h2>技术架构</h2>
+            <div class="arch-diagram">
+                <div class="arch-layer">
+                    <h4>前端展示层</h4>
+                    <ul>
+                        <li>响应式HTML5/CSS3界面</li>
+                        <li>Markdown实时渲染</li>
+                        <li>SSE事件流处理</li>
+                    </ul>
+                </div>
+                <div class="arch-layer">
+                    <h4>业务逻辑层</h4>
+                    <ul>
+                        <li>Flask RESTful API</li>
+                        <li>APScheduler定时任务</li>
+                        <li>节点健康检查系统</li>
+                    </ul>
+                </div>
+                <div class="arch-layer">
+                    <h4>基础设施层</h4>
+                    <ul>
+                        <li>Ollama模型服务集群</li>
+                        <li>Nginx反向代理</li>
+                        <li>Docker容器化部署</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo">
+        <div class="container">
+            <h2>功能演示</h2>
+            <div class="demo-showcase">
+                <img src="/static/demo.gif" alt="操作演示">
+                <div class="demo-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <p>选择可用节点与模型</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <p>输入自然语言指令</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <p>获取实时流式响应</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="license">
+                <p>MPL-v2 License | © 2024 free-ollama-chat</p>
+                <p>项目地址：<a href="https://github.com/myh1011/free-ollama-chat" target="_blank">GitHub</a></p>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">30+</div>
+                    <div class="stat-label">支持模型</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">服务可用性</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .feature-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .arch-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .demo-showcase {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        .footer {
+            background: var(--surface);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+    </style>
+</body>
+</html>
