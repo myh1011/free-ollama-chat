@@ -1,24 +1,26 @@
+# scan_llm.py
 import requests
-import time
-TIMEOUT = 0.3
+import concurrent.futures
+
+TIMEOUT = 2
 
 def fetch_ollama_models(ip_port):
     try:
         url = f"http://{ip_port}/api/tags"
         response = requests.get(url, timeout=TIMEOUT)
         if response.status_code == 200:
-            return [model['name'] for model in response.json().get('models', [])]
-        return []
+            return (ip_port, [model['name'] for model in response.json().get('models', [])])
+        return (ip_port, [])
     except Exception as e:
         print(f"无法获取 {ip_port} 的模型：{str(e)}")
-        return []
+        return (ip_port, [])
 
 def scan_ips(ip_port_list):
     result = {}
-    for ip_port in ip_port_list:
-        print(f"正在扫描 {ip_port}...")
-        models = fetch_ollama_models(ip_port)
-        if models:
-            result[ip_port] = models
-        time.sleep(0.5)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        futures = [executor.submit(fetch_ollama_models, ip) for ip in ip_port_list]
+        for future in concurrent.futures.as_completed(futures):
+            ip_port, models = future.result()
+            if models:
+                result[ip_port] = models
     return result

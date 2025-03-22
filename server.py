@@ -1,50 +1,57 @@
+# server.py
 from flask import Flask, request, Response, render_template
 import requests
 import json
 import logging
-import re
 import pandas as pd
 import scan_llm
 from apscheduler.schedulers.background import BackgroundScheduler
+from threading import Lock
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Aaa236875'
 app.logger.setLevel(logging.DEBUG)
-df = pd.read_csv('data.csv')
-# 初始IP列表
+df = pd.read_csv('data_big.csv')
 data_array = df.to_numpy()
 ip_list = data_array[:, 0]
+
+# 线程安全的模型存储
 ip_models = {}
+ip_models_lock = Lock()
 
 def update_ip_models():
     global ip_models
     app.logger.info("开始定时扫描IP可用性...")
     new_models = scan_llm.scan_ips(ip_list)
-    ip_models = new_models  # 直接替换整个字典，避免并发问题
-    app.logger.info(f"IP扫描完成，当前可用IP及模型: {ip_models}")
+    with ip_models_lock:
+        ip_models = new_models
+    app.logger.info(f"IP扫描完成，当前可用IP及模型数量: {len(ip_models)}")
 
-# 初始化时立即扫描一次
-update_ip_models()
+# 初始化时使用线程执行扫描
+from threading import Thread
+Thread(target=update_ip_models).start()
 
 # 配置定时任务
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_ip_models, 'interval', minutes=30)
+scheduler.add_job(update_ip_models, 'interval', minutes=720)
 scheduler.start()
-
 
 @app.route('/')
 def index():
-    return render_template('index.html', ip_models=ip_models)
+    with ip_models_lock:
+        return render_template('index.html', ip_models=ip_models)
+
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 @app.route('/api/models')
 def get_models():
     ip = request.args.get('ip')
     app.logger.debug(f"Request models for IP: {ip}")
-    return {'models': ip_models.get(ip, [])}
+    with ip_models_lock:
+        return {'models': ip_models.get(ip, [])}
 
-@app.route('/api/chat', methods=['GET'])
 @app.route('/api/chat', methods=['GET'])
 def chat_stream():
     ip_port = request.args.get('ip')
@@ -73,25 +80,22 @@ def chat_stream():
             ) as r:
                 r.raise_for_status()
                 for line in r.iter_lines():
-                    if not line:
-                        continue
-                    try:
-                        chunk = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-
-                    token = chunk.get('response', '')
-                    if '<think>' in token:
-                        import re
-                        parts = re.split(r'(<think>.*?</think>)', token)
-                        for part in parts:
-                            if part.startswith('<think>') and part.endswith('</think>'):
-                                think_content = part[len('<think>'):-len('</think>')]
-                                yield f"event: think\ndata: {json.dumps({'content': think_content})}\n\n"
-                            elif part:
-                                yield f"data: {json.dumps({'text': part})}\n\n"
-                    else:
-                        yield f"data: {json.dumps({'text': token})}\n\n"
+                    if line:
+                        try:
+                            chunk = json.loads(line)
+                            token = chunk.get('response', '')
+                            if '<think>' in token:
+                                parts = re.split(r'(<think>.*?</think>)', token)
+                                for part in parts:
+                                    if part.startswith('<think>') and part.endswith('</think>'):
+                                        think_content = part[7:-8]
+                                        yield f"event: think\ndata: {json.dumps({'content': think_content})}\n\n"
+                                    elif part:
+                                        yield f"data: {json.dumps({'text': part})}\n\n"
+                            else:
+                                yield f"data: {json.dumps({'text': token})}\n\n"
+                        except:
+                            continue
             yield "event: done\ndata: {}\n\n"
         except Exception as e:
             app.logger.error(f"Stream error: {str(e)}")
@@ -99,6 +103,5 @@ def chat_stream():
 
     return Response(event_stream(), mimetype='text/event-stream')
 
-
 if __name__ == '__main__':
-    app.run(debug=True, port=5000,host="0.0.0.0")
+    app.run(debug=True, port=5000, host="0.0.0.0")
