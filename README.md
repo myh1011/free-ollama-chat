@@ -12,6 +12,14 @@
 - 自动扫描维护IP节点列表（支持自定义扫描间隔）
 - 实时健康检查与故障节点自动剔除
 
+### 🗒️ 可以使用Fofa等网络嗅探工具导出的CSV IP文件
+-可以导入以下格式的CSV文件
+```csv
+1.1.1.1:1111,......
+1.1.1.2:1112,......
+```
+-只需要保证第一列是 ip地址:端口号 即可
+
 ### 🤖 多模型管理
 - 动态加载不同节点的AI模型
 - 通过调用Ollama，我们支持所有Ollama支持的模型!
@@ -20,12 +28,10 @@
 ### 💬 智能交互系统
 - 基于SSE的实时流式响应（<200ms延迟）
 - Markdown渲染与代码高亮支持
-- 上下文感知的对话管理
 
 ### 🛡️ 企业级特性
 - 自动重试与故障转移机制
 - 请求负载均衡
-- 敏感词过滤与审计日志
 
 ## 🛠️ 技术架构
 
@@ -48,7 +54,6 @@ graph TD
 
 ### 前置要求
 - Python 3.8+
-- Redis 6.0+ (用于会话缓存)
 - Ollama 0.1.16+ 节点
 
 ### 安装步骤
@@ -68,20 +73,9 @@ python server.py
 | `/api/chat` | GET | 启动流式聊天会话 |
 
 
-### 扩展开发
-```python
-# 自定义模型加载器
-from extensions import BaseLoader
-
-class MyCustomLoader(BaseLoader):
-    def load_models(self, node):
-        # 实现自定义模型发现逻辑
-        return super().load_models(node)
-```
-
 ## 🤝 参与贡献
 
-我们欢迎各种形式的贡献！请阅读我们的 [贡献指南](CONTRIBUTING.md)：
+我们欢迎各种形式的贡献！请阅读我们的贡献指南：
 1. Fork 本仓库
 2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
 3. 提交修改 (`git commit -m 'Add some amazing feature'`)

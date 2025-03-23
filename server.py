@@ -10,9 +10,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from threading import Lock
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'Aaa236875'
+app.config['SECRET_KEY'] = 'key1145'
 app.logger.setLevel(logging.DEBUG)
-df = pd.read_csv('data_big.csv')
+df = pd.read_csv('data.csv')
 data_array = df.to_numpy()
 ip_list = data_array[:, 0]
 
