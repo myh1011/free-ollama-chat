@@ -13,8 +13,8 @@ from collections import defaultdict
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'key1145'
 app.logger.setLevel(logging.DEBUG)
-
-df = pd.read_csv('../data_small.csv')
+#你的csv数据集路径
+df = pd.read_csv('../data.csv')
 data_array = df.to_numpy()
 ip_list = data_array[:, 0]
 
