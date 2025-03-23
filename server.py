@@ -4,6 +4,7 @@ import requests
 import json
 import logging
 import pandas as pd
+import re
 import scan_llm
 from apscheduler.schedulers.background import BackgroundScheduler
 from threading import Lock
@@ -33,7 +34,7 @@ Thread(target=update_ip_models).start()
 
 # 配置定时任务
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_ip_models, 'interval', minutes=720)
+scheduler.add_job(update_ip_models, 'interval', minutes=120)
 scheduler.start()
 
 @app.route('/')
