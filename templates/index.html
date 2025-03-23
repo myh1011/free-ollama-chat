@@ -7,25 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- 添加必要的JS库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 <body>
     <h2>INTERNAL USE ONLY! by myh1010</h2>
     <a href="/about">About project</a>
     <div class="chat-container">
         <div class="server-select">
-            <select id="ipSelect">
-                {% for ip in ip_models.keys() %}
-                <option value="{{ ip }}">{{ ip }}</option>
+            <select id="modelSelect">
+                <option value="">选择模型</option>
+                {% for model in model_data.keys() %}
+                <option value="{{ model }}">{{ model }}</option>
                 {% endfor %}
             </select>
-            <select id="modelSelect">
-                {% for ip, models in ip_models.items() %}
-                    {% if loop.first %}
-                        {% for model in models %}
-                            <option value="{{ model }}">{{ model }}</option>
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
+            <select id="ipSelect">
+                <option value="">选择IP地址</option>
             </select>
         </div>
         <div class="chat-history" id="chatHistory"></div>
@@ -35,47 +33,18 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
+        // 全局变量声明
         let currentMessage = null;
         let rawMessageBuffer = "";
         let eventSource = null;
+        let streamFinished = false;  // 修复变量初始化问题
         
-        const ipSelect = document.getElementById('ipSelect');
         const modelSelect = document.getElementById('modelSelect');
+        const ipSelect = document.getElementById('ipSelect');
         const chatHistory = document.getElementById('chatHistory');
 
-        function initModelSelect() {
-            const initialIP = ipSelect.value;
-            fetch(`/api/models?ip=${encodeURIComponent(initialIP)}`)
-                .then(response => response.json())
-                .then(data => {
-                    modelSelect.innerHTML = '';
-                    data.models.forEach(model => {
-                        const option = document.createElement('option');
-                        option.value = model;
-                        option.textContent = model;
-                        modelSelect.appendChild(option);
-                    });
-                });
-        }
-        initModelSelect();
-
-        ipSelect.addEventListener('change', () => {
-            fetch(`/api/models?ip=${encodeURIComponent(ipSelect.value)}`)
-                .then(response => response.json())
-                .then(data => {
-                    modelSelect.innerHTML = '';
-                    data.models.forEach(model => {
-                        const option = document.createElement('option');
-                        option.value = model;
-                        option.textContent = model;
-                        modelSelect.appendChild(option);
-                    });
-                });
-        });
-
+        // 初始化marked配置
         marked.setOptions({
             breaks: true,
             highlight: function(code, lang) {
@@ -83,6 +52,27 @@
                 return hljs.highlight(code, { language }).value;
             },
             sanitize: true
+        });
+
+        function updateIpSelect(ips) {
+            ipSelect.innerHTML = '<option value="">选择IP地址</option>';
+            ips.forEach(ipInfo => {
+                const option = document.createElement('option');
+                option.value = ipInfo.ip;
+                let latencyText = ipInfo.latency === -1 ? '超时' : `${ipInfo.latency}ms`;
+                option.textContent = `${ipInfo.ip} (${latencyText})`;
+                ipSelect.appendChild(option);
+            });
+        }
+
+        modelSelect.addEventListener('change', () => {
+            if (!modelSelect.value) return;
+            
+            fetch(`/api/ips?model=${encodeURIComponent(modelSelect.value)}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateIpSelect(data.ips);
+                });
         });
 
         function createMessageElement(role) {
@@ -98,8 +88,6 @@
             currentMessage.appendChild(thinkDiv);
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
-
-        let streamFinished = false;
 
         async function sendMessage() {
             const input = document.getElementById('messageInput');
@@ -122,13 +110,13 @@
             chatHistory.appendChild(currentMessage);
             
             rawMessageBuffer = "";
-            streamFinished = false;
+            streamFinished = false;  // 重置流状态
 
             try {
                 const selectedIP = encodeURIComponent(ipSelect.value);
                 const selectedModel = encodeURIComponent(modelSelect.value);
                 if(!selectedIP || !selectedModel) {
-                    throw new Error('请选择有效的IP和模型');
+                    throw new Error('请选择有效的模型和IP地址');
                 }
                 eventSource = new EventSource(
                     `/api/chat?ip=${selectedIP}&model=${selectedModel}&q=${encodeURIComponent(message)}`

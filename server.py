@@ -8,26 +8,31 @@ import re
 import scan_llm
 from apscheduler.schedulers.background import BackgroundScheduler
 from threading import Lock
+from collections import defaultdict
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'key1145'
 app.logger.setLevel(logging.DEBUG)
 
-df = pd.read_csv('../data_bigest.csv')
+df = pd.read_csv('data.csv')
 data_array = df.to_numpy()
 ip_list = data_array[:, 0]
 
 # 线程安全的模型存储
-ip_models = {}
+model_ip_data = defaultdict(dict)
 ip_models_lock = Lock()
 
 def update_ip_models():
-    global ip_models
+    global model_ip_data
     app.logger.info("开始定时扫描IP可用性...")
     new_models = scan_llm.scan_ips(ip_list)
     with ip_models_lock:
-        ip_models = new_models
-    app.logger.info(f"IP扫描完成，当前可用IP及模型数量: {len(ip_models)}")
+        # 重组数据结构：按模型分类
+        model_ip_data = defaultdict(dict)
+        for ip, data in new_models.items():
+            for model in data['models']:
+                model_ip_data[model][ip] = data['latency']
+    app.logger.info(f"IP扫描完成，当前可用模型数量: {len(model_ip_data)}")
 
 # 初始化时使用线程执行扫描
 from threading import Thread
@@ -41,7 +46,20 @@ scheduler.start()
 @app.route('/')
 def index():
     with ip_models_lock:
-        return render_template('index.html', ip_models=ip_models)
+        return render_template('index.html', model_data=model_ip_data)
+
+@app.route('/api/ips')
+def get_ips():
+    model = request.args.get('model')
+    app.logger.debug(f"Request IPs for model: {model}")
+    with ip_models_lock:
+        ips = model_ip_data.get(model, {})
+        # 按延迟排序
+        sorted_ips = sorted(ips.items(), key=lambda x: x[1] if x[1] != -1 else float('inf'))
+        return {'ips': [{'ip': ip, 'latency': latency} for ip, latency in sorted_ips]}
+
+# 保持原有/chat和/about路由不变...
+# （其余代码保持不变）
 
 @app.route('/about')
 def about():
@@ -52,7 +70,7 @@ def get_models():
     ip = request.args.get('ip')
     app.logger.debug(f"Request models for IP: {ip}")
     with ip_models_lock:
-        return {'models': ip_models.get(ip, [])}
+        return {'models': scan_llm.ip_models.get(ip, [])}
 
 @app.route('/api/chat', methods=['GET'])
 def chat_stream():
