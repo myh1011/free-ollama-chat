@@ -12,8 +12,8 @@ from threading import Lock
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'key1145'
 app.logger.setLevel(logging.DEBUG)
-#CSV ip list file
-df = pd.read_csv('data.csv')
+
+df = pd.read_csv('../data_bigest.csv')
 data_array = df.to_numpy()
 ip_list = data_array[:, 0]
 
