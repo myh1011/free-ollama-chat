@@ -67,17 +67,6 @@ python server.py
 | `/api/chat` | GET | 启动流式聊天会话 |
 
 
-### 扩展开发
-```python
-# 自定义模型加载器
-from extensions import BaseLoader
-
-class MyCustomLoader(BaseLoader):
-    def load_models(self, node):
-        # 实现自定义模型发现逻辑
-        return super().load_models(node)
-```
-
 ## 🤝 参与贡献
 
 我们欢迎各种形式的贡献！请阅读我们的 [贡献指南](CONTRIBUTING.md)：
