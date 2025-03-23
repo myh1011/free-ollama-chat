@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat by myh1010(Test)</title>
+    <title>Free Ollama Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
@@ -12,8 +12,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 <body>
-    <h2>INTERNAL USE ONLY! by myh1010</h2>
-    <a href="/about">About project</a>
     <div class="chat-container">
         <div class="server-select">
             <select id="modelSelect">
@@ -32,7 +30,10 @@
             <button onclick="sendMessage()">发送</button>
         </div>
     </div>
-
+    <div align="center">
+        <a href="/about">关于本项目</a>
+        <p>© 2025 free-ollama-chat. All rights reserved. </p>
+    </div>
     <script>
         // 全局变量声明
         let currentMessage = null;
