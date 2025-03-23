@@ -21,6 +21,7 @@ def fetch_ollama_models(ip_port):
             })
         return (ip_port, {'models': [], 'latency': latency})
     except Exception as e:
+        print(f"无法获取 {ip_port} 的模型：{str(e)}")
         return (ip_port, {'models': [], 'latency': -1})
 
 
@@ -30,6 +31,6 @@ def scan_ips(ip_port_list):
         futures = [executor.submit(fetch_ollama_models, ip) for ip in ip_port_list]
         for future in concurrent.futures.as_completed(futures):
             ip_port, data = future.result()
-            if data['models']:
+            if data['models']: 
                 result[ip_port] = data
     return result
