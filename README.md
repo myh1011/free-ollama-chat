@@ -5,7 +5,7 @@
 [![Flask](https://img.shields.io/badge/Flask-2.0%2B-red.svg)](https://flask.palletsprojects.com/)
 
 **分布式AI服务管理平台 | 自动化节点发现 · 多模型支持 · 实时流式交互**
-
+###项目交流qq群：1039278591
 ## 🌟 核心特性
     免费使用Ollama服务？这一个项目就够啦！
 ### 🕵️ 智能节点发现
