@@ -1,0 +1,57 @@
+Free-Ollama-Chat Open Source Project Deployment Agreement
+(Version 1.1, Effective Date: March 26, 2025)
+
+Chapter 1: General Provisions
+
+Article 1 This agreement applies to all individuals, legal entities, and other organizations (hereinafter referred to as "Users") that use, deploy, or develop Free-Ollama-Chat (hereinafter referred to as "the Project") in any form.
+
+Article 2 The source code of the Project is protected by the Copyright Law of the People's Republic of China and follows the Mozilla Public License 2.0 (MPL-2.0). Users must comply with all terms of the MPL-2.0 license as well as the special provisions of this supplementary agreement.
+
+Chapter 2: Rights and Obligations
+
+Article 3 Special Provisions on Network Security
+
+Users agree not to use the Project for any activities that may harm the network security of the People's Republic of China, including but not limited to:
+(1) Unauthorized scanning, penetration testing, or DDoS attacks on domestic servers
+(2) Creating or distributing malicious software such as computer viruses
+(3) Illegally obtaining, selling, or disclosing network data
+(4) Engaging in other prohibited network activities as defined by the Cybersecurity Law
+
+Article 4 Intellectual Property Provisions
+
+Users developing derivative works from the Project must:
+(1) Retain the original copyright notice in the header of source code files
+(2) Clearly indicate "Based on Free-Ollama-Chat Project" in a prominent location (such as the website footer) and specify any changes made
+(3) Provide the original project repository link in the project documentation
+
+Chapter 3: Disclaimer
+
+Article 5 The Project is provided "as is," and the project maintainers do not guarantee:
+
+That the code is free of defects or meets specific quality standards
+
+That the service will be continuously available without interruption
+
+Any legal liability for direct or indirect losses arising from the use of the Project
+
+Article 6 Users shall bear full responsibility for legal disputes arising from the following situations:
+
+Violations of local data privacy regulations (e.g., GDPR, PIPL)
+
+The generation of content that infringes on others' intellectual property
+
+Use of the Project for illegal commercial activities
+
+Chapter 4: Supplementary Provisions
+
+Article 7 Applicable Law and Dispute Resolution
+
+The interpretation of this Agreement belongs to the project initiators.
+
+Disputes should first be resolved through amicable negotiations. If negotiations fail, the dispute should be submitted to the competent court located where the project initiators are based.
+
+Article 8 Agreement Updates
+The project maintainers reserve the right to modify this Agreement. The modified Agreement will take effect after being publicly posted in the project repository for 3 business days.
+
+Article 9 Effectiveness Provisions
+In case of conflict between this Agreement and the MPL-2.0, the special provisions of this Agreement shall prevail. If any provision of this Agreement is deemed invalid, the validity of other provisions will not be affected.
