@@ -12,11 +12,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 <body>
+    <div align=""center>
+        <h3>Free Ollama Chat</h3>
+        <p>ver 1.5</p>
+    </div>
     <div class="chat-container">
         <div class="server-select">
             <select id="modelSelect">
                 <option value="">选择模型</option>
-                {% for model in model_data.keys() %}
+                {% for model in sorted_models %}  <!-- 确保使用sorted_models -->
                 <option value="{{ model }}">{{ model }}</option>
                 {% endfor %}
             </select>

@@ -44,9 +44,14 @@ scheduler.add_job(update_ip_models, 'interval', minutes=120)
 scheduler.start()
 
 @app.route('/')
+@app.route('/')
 def index():
     with ip_models_lock:
-        return render_template('index.html', model_data=model_ip_data)
+        # 保持原始model_data结构的同时传递排序后的列表
+        sorted_models = sorted(model_ip_data.keys(), key=lambda x: x.lower())
+        return render_template('index.html', 
+                             sorted_models=sorted_models,
+                             model_data=model_ip_data)  # 保持原有数据结构
 
 @app.route('/api/ips')
 def get_ips():
@@ -125,3 +130,4 @@ def chat_stream():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host="0.0.0.0")
+    #ver 1.5
