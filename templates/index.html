@@ -43,7 +43,7 @@
         let currentMessage = null;
         let rawMessageBuffer = "";
         let eventSource = null;
-        let streamFinished = false;  // 修复变量初始化问题
+        let streamFinished = false;  // 修复变量初始化问题(TEST)
         
         const modelSelect = document.getElementById('modelSelect');
         const ipSelect = document.getElementById('ipSelect');
@@ -115,7 +115,7 @@
             chatHistory.appendChild(currentMessage);
             
             rawMessageBuffer = "";
-            streamFinished = false;  // 重置流状态
+            streamFinished = false;
 
             try {
                 const selectedIP = encodeURIComponent(ipSelect.value);

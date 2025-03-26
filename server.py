@@ -18,7 +18,6 @@ df = pd.read_csv('../data.csv')
 data_array = df.to_numpy()
 ip_list = data_array[:, 0]
 
-# 线程安全的模型存储
 model_ip_data = defaultdict(dict)
 ip_models_lock = Lock()
 
@@ -27,7 +26,6 @@ def update_ip_models():
     app.logger.info("开始定时扫描IP可用性...")
     new_models = scan_llm.scan_ips(ip_list)
     with ip_models_lock:
-        # 重组数据结构：按模型分类
         model_ip_data = defaultdict(dict)
         for ip, data in new_models.items():
             for model in data['models']:
