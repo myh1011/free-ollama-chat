@@ -65,7 +65,10 @@ graph TD
 ```bash
 # 克隆仓库
 git clone https://github.com/myh1011/free-ollama-chat.git
-
+# 安装库
+pip install flask
+pip install pandas
+pip install apscheduler
 # 启动服务
 python server.py
 ```
