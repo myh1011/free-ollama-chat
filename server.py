@@ -142,5 +142,5 @@ def get_stats():
             'available_ips': len(all_available_ips)
         }
 if __name__ == '__main__':
-    app.run(debug=True, port=5000, host="0.0.0.0")
-    #ver 1.5
+    app.run(debug=True, port=80, host="0.0.0.0")
+    #ver 1.6
