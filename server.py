@@ -58,6 +58,7 @@ def get_ips():
         ips = model_ip_data.get(model, {})
         filtered_ips = {
             ip: latency for ip, latency in ips.items()
+            #排除的范围
             if not (latency != -1 and latency < 100) 
         }
         sorted_ips = sorted(
