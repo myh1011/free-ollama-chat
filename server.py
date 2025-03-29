@@ -45,11 +45,10 @@ scheduler.start()
 @app.route('/')
 def index():
     with ip_models_lock:
-        # 保持原始model_data结构的同时传递排序后的列表
         sorted_models = sorted(model_ip_data.keys(), key=lambda x: x.lower())
         return render_template('index.html', 
                              sorted_models=sorted_models,
-                             model_data=model_ip_data)  # 保持原有数据结构
+                             model_data=model_ip_data)
 
 @app.route('/api/ips')
 def get_ips():
@@ -57,12 +56,15 @@ def get_ips():
     app.logger.debug(f"Request IPs for model: {model}")
     with ip_models_lock:
         ips = model_ip_data.get(model, {})
-        # 按延迟排序
-        sorted_ips = sorted(ips.items(), key=lambda x: x[1] if x[1] != -1 else float('inf'))
+        filtered_ips = {
+            ip: latency for ip, latency in ips.items()
+            if not (latency != -1 and latency < 100) 
+        }
+        sorted_ips = sorted(
+            filtered_ips.items(),
+            key=lambda x: x[1] if x[1] != -1 else float('inf')
+        )
         return {'ips': [{'ip': ip, 'latency': latency} for ip, latency in sorted_ips]}
-
-# 保持原有/chat和/about路由不变...
-# （其余代码保持不变）
 
 @app.route('/about')
 def about():
@@ -125,7 +127,20 @@ def chat_stream():
             yield f"event: error\ndata: {json.dumps({'error': '服务连接失败'})}\n\n"
 
     return Response(event_stream(), mimetype='text/event-stream')
-
+@app.route('/api/stats')
+def get_stats():
+    with ip_models_lock:
+        total_ips = len(ip_list)
+        all_available_ips = set()
+        for model, ips in model_ip_data.items():
+            for ip, latency in ips.items():
+                if latency != -1:
+                    all_available_ips.add(ip)
+        
+        return {
+            'total_ips': total_ips,
+            'available_ips': len(all_available_ips)
+        }
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host="0.0.0.0")
     #ver 1.5
