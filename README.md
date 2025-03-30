@@ -48,7 +48,7 @@ graph TD
     C --> E[节点2: Ollama server 2]
     C --> F[节点3: Ollama server 3]
     C --> G[节点....]
-    subgraph 基础设施
+    subgraph IP池
     D --> H[(模型仓库1)]
     E --> I[(模型仓库2)]
     F --> J[(模型仓库3)]
