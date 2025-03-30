@@ -3,7 +3,7 @@
 [![License: MPL](https://img.shields.io/badge/License-MPL-blue.svg)](https://opensource.org/licenses/MPL)
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-green.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.0%2B-red.svg)](https://flask.palletsprojects.com/)
-
+## 免费使用Ollama服务？这一个项目就够啦！
 **分布式AI服务管理平台 | 自动化节点发现 · 多模型支持 · 实时流式交互**
 
     本人qq：3830247702 （备注来意）
@@ -12,7 +12,7 @@
 ##### 官方站点 (http://ai.myhblog.dpdns.org/)
 ## WARNING 使用此工具必须参阅《部署协议》，如果您从这个数据库中通过任意方式获取了任意文件，则代表您同意《部署协议》
 ## 🌟 核心特性
-    免费使用Ollama服务？这一个项目就够啦！
+    通过读取数据集中的IP地址，自动测算延迟及ip对应的模型，通过前端Web页面可视化调用
 ### 🕵️ 智能节点发现
 - 自动扫描维护IP节点列表（支持自定义扫描间隔）
 - 实时健康检查与故障节点自动剔除
