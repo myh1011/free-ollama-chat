@@ -116,7 +116,7 @@ def chat_stream():
                                     if part.startswith('<think>') and part.endswith('</think>'):
                                         think_content = part[7:-8]
                                         yield f"event: think\ndata: {json.dumps({'content': think_content})}\n\n"
-                                    elif part:
+                                    elif part.strip():
                                         yield f"data: {json.dumps({'text': part})}\n\n"
                             else:
                                 yield f"data: {json.dumps({'text': token})}\n\n"
@@ -143,5 +143,5 @@ def get_stats():
             'available_ips': len(all_available_ips)
         }
 if __name__ == '__main__':
-    app.run(debug=True, port=80, host="0.0.0.0")
+    app.run(debug=True, port=5000, host="0.0.0.0")
     #ver 1.6
